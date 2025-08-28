@@ -42,7 +42,7 @@ class TvShowModel extends ChangeNotifier {
     try {
       return await _tvShowService.fetchTvShow(query);
     } catch (e) {
-      throw Exception("Falha em buscar séries ${e.toString() ❌}");
+      throw Exception("Falha em buscar séries ${e.toString()❌}");
     }
   }
 
