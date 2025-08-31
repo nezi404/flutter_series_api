@@ -23,6 +23,7 @@ class _TvShowSearchScreenState extends State<TvShowSearchScreen> {
     if(_formKey.currentState!.validate()) {
       final tvShowModel = context.read<TvShowModel>();
       setState(() {
+        onSubmit = true;
         searchResults = tvShowModel.searchTvShows(_controller.text);
       });
     }

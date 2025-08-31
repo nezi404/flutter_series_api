@@ -25,7 +25,7 @@ class TvShow {
       id: json["id"],
       imageUrl: json["image"]?["medium"] ?? "",
       name: json["name"],
-      webChannel: json["webChannel"] ?? "N/A",
+      webChannel: json["webChannel"]?["name"] ?? "N/A",
       rating: json["rating"]?["average"]?.toDouble() ?? 0.0,
       summary: json["summary"] ?? "Sem resumo disponível para essa série ❌"
     );
@@ -42,7 +42,7 @@ class TvShowModel extends ChangeNotifier {
     try {
       return await _tvShowService.fetchTvShow(query);
     } catch (e) {
-      throw Exception("Falha em buscar séries ${e.toString()❌}");
+      throw Exception("Falha em buscar séries ${e.toString()}❌");
     }
   }
 
