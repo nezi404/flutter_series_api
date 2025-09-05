@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:app3_series_api/fav_tv_show_screen.dart';
 import 'package:app3_series_api/tv_show_service.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
 class TvShow {
   int id;
@@ -30,13 +32,100 @@ class TvShow {
       summary: json["summary"] ?? "Sem resumo disponível para essa série ❌"
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "imageUrl": imageUrl,
+      "name": name,
+      "webChannel": webChannel,
+      "rating": rating,
+      "summary": summary
+    };
+  }
 }
 
 class TvShowModel extends ChangeNotifier {
 
-  final TvShowService _tvShowService = TvShowService();
-  final List<TvShow> _tvShows = [];
+  late TvShowService _tvShowService = TvShowService();
+
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  List<TvShow> _tvShows = [];
   List<TvShow> get tvShows => _tvShows;
+  bool get isLoading => _isLoading;
+  String? get errorMessage => _errorMessage;
+  bool get hasFavourites => _tvShows.isNotEmpty;
+
+  TvShowModel() {
+    _tvShowService = TvShowService();
+    initialize();
+  }
+
+  Future<void> initialize() async {
+    await load();
+  }
+
+  Future<void> initializeAsc() async {
+    await loadAsc();
+  }
+
+  void _setLoading(bool loading) {
+    _isLoading = loading;
+    notifyListeners();
+  }
+
+  void _setError(String? error) {
+    _errorMessage = error;
+    notifyListeners();
+  }
+
+  Future<void> load() async {
+    try {
+      _setLoading(true);
+      _setError(null);
+      _tvShows = await _tvShowService.getAll();
+
+    } catch (e) {
+      _setError("Falha ao carregar séries favoritas do banco: ${e.toString()}");
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+    Future<void> loadAsc() async {
+      try {
+      _setLoading(true);
+      _setError(null);
+      _tvShows = await _tvShowService.getAllOrdered();
+
+    } catch (e) {
+      _setError("Falha ao carregar séries favoritas do banco ordenadas: ${e.toString()}");
+    } finally {
+      _setLoading(false);
+    }
+    }
+
+  Future<bool> isFavourite (TvShow tvShow) async {
+    try {
+      return await _tvShowService.isFavourite(tvShow);
+    } catch (e) {
+      _setError("Falha ao verificar se a série é séries favoritas: ${e.toString()}");
+      return false;
+    } 
+  }
+  // adicionando ao banco de dados
+  Future<void> addToFavourites(TvShow tvShow) async {
+    await _tvShowService.insert(tvShow);
+    notifyListeners();
+  }
+
+  // removendo do banco de dados
+  Future<void> removeFromFavourites(TvShow tvShow) async {
+    await _tvShowService.delete(tvShow.id);
+    notifyListeners();
+  }
 
   Future<TvShow> getTvShowById(int id) async {
     try {
