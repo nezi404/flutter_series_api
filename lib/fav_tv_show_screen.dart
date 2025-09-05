@@ -22,7 +22,7 @@ class _FavTvShowScreenState extends State<FavTvShowScreen> {
 
   @override
   Widget build(BuildContext context) {
-
+    bool asc = false;
     return Consumer<TvShowModel>(
       builder: (context, viewModel, child) {
         if(viewModel.isLoading) {
@@ -81,9 +81,14 @@ class _FavTvShowScreenState extends State<FavTvShowScreen> {
                     ),
                   FloatingActionButton.small(
                   onPressed: () {
+                    asc = !asc;
+                    if (asc) {
                     context.read<TvShowModel>().initializeAsc();
+                    } else {
+                      context.read<TvShowModel>().initializeDes();
+                    }
                   },
-                  child: Text("A-Z"),
+                  child: asc ? Text("Z-A") : Text("A-Z"),
                 ),
           ],
         )

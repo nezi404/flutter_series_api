@@ -71,6 +71,10 @@ class TvShowModel extends ChangeNotifier {
     await loadAsc();
   }
 
+  Future<void> initializeDes() async {
+    await loadDesc();
+  }
+
   void _setLoading(bool loading) {
     _isLoading = loading;
     notifyListeners();
@@ -105,6 +109,19 @@ class TvShowModel extends ChangeNotifier {
     } finally {
       _setLoading(false);
     }
+    }
+
+    Future<void> loadDesc() async {
+      try {
+      _setLoading(true);
+      _setError(null);
+      _tvShows = await _tvShowService.getAllDesc();
+
+      } catch (e) {
+        _setError("Falha ao carregar séries favoritas do banco ordenadas: ${e.toString()}");
+      } finally {
+        _setLoading(false);
+      }
     }
 
   Future<bool> isFavourite (TvShow tvShow) async {

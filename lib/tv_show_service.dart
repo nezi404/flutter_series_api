@@ -24,6 +24,14 @@ class TvShowService {
     return _convertToList(maps);
   }
 
+  Future<List<TvShow>> getAllDesc () async {
+    final db = await _databaseService.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      "tv_shows",
+      orderBy: "name DESC");
+    return _convertToList(maps);
+  }
+
   List<TvShow> _convertToList(List<Map< String, dynamic>> maps) {
     return maps.map((map) => TvShow(
     id: map["id"] as int,
