@@ -38,11 +38,19 @@ class TvShowModel extends ChangeNotifier {
   final List<TvShow> _tvShows = [];
   List<TvShow> get tvShows => _tvShows;
 
+  Future<TvShow> getTvShowById(int id) async {
+    try {
+      return await _tvShowService.fetchTvShowById(id);
+    } catch (e) {
+      throw Exception("Falha em carregar série: ${e.toString()}❌");
+    }
+  }
+
   Future<List<TvShow>> searchTvShows(String query) async {
     try {
       return await _tvShowService.fetchTvShow(query);
     } catch (e) {
-      throw Exception("Falha em buscar séries ${e.toString()}❌");
+      throw Exception("Falha em buscar séries: ${e.toString()}❌");
     }
   }
 
@@ -51,7 +59,7 @@ class TvShowModel extends ChangeNotifier {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Série adicionada com sucesso!',
+          'Série adicionada aos favoritos!',
           textAlign: TextAlign.center,
         ),
         duration: Duration(seconds: 2),
@@ -68,7 +76,7 @@ class TvShowModel extends ChangeNotifier {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${tvShow.name} excluída!'),
+        content: Text('${tvShow.name} removida dos favoritos!'),
         duration: Duration(seconds: 3),
         action: SnackBarAction(
           label: 'DESFAZER',
