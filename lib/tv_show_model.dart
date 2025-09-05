@@ -133,14 +133,42 @@ class TvShowModel extends ChangeNotifier {
     } 
   }
   // adicionando ao banco de dados
-  Future<void> addToFavourites(TvShow tvShow) async {
+  Future<void> addToFavourites(BuildContext context, TvShow tvShow) async {
     await _tvShowService.insert(tvShow);
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${tvShow.name} adicionada dos favoritos!'),
+        duration: Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'DESFAZER',
+          onPressed: () async {
+            await _tvShowService.delete(tvShow.id);
+            notifyListeners();
+          },
+        ),
+      ),
+    );
     notifyListeners();
   }
 
   // removendo do banco de dados
-  Future<void> removeFromFavourites(TvShow tvShow) async {
+  Future<void> removeFromFavourites(BuildContext context, TvShow tvShow) async {
     await _tvShowService.delete(tvShow.id);
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${tvShow.name} removida dos favoritos!'),
+        duration: Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'DESFAZER',
+          onPressed: () async {
+            await _tvShowService.insert(tvShow);
+            notifyListeners();
+          },
+        ),
+      ),
+    );
     notifyListeners();
   }
 

@@ -4,9 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class TvShowGrid extends StatefulWidget {
-  const TvShowGrid({super.key, required this.tvShows});
+  const TvShowGrid({super.key, required this.tvShows, required this.refresh});
 
   final List<TvShow> tvShows;
+  final bool refresh;
   @override
   State<TvShowGrid> createState() => _TvShowGridState();
 }
@@ -27,6 +28,7 @@ class _TvShowGridState extends State<TvShowGrid> {
       itemBuilder: (context, index) {
 
         final tvShow = widget.tvShows[index];
+        final bool refresh = widget.refresh;
 
         // GestureDetector detecta toques na tela do card,
         // tem varios tipos de tap: como tocar e segurar
@@ -87,15 +89,17 @@ class _TvShowGridState extends State<TvShowGrid> {
               final isFavourite = snapshot.data ?? false;
               return Positioned(
                 child: IconButton(
-                icon: Icon(isFavourite ? Icons.favorite : Icons.heart_broken,
+                icon: Icon(isFavourite ? Icons.heart_broken : Icons.favorite,
                   size:32,
-                  color: isFavourite ? Color(0xff8716d5) : Color.fromARGB(255, 122, 122, 122)),
+                  color: isFavourite ? Color.fromARGB(255, 122, 122, 122) :  Color(0xff8716d5)),
                 onPressed: () {
                   if(isFavourite) {
-                    tvShowModel.removeFromFavourites(tvShow);
+                    tvShowModel.removeFromFavourites(context, tvShow);
                   } else {
-                    tvShowModel.addToFavourites(tvShow);
+                    tvShowModel.addToFavourites(context, tvShow);
                   }
+                  refresh ? context.go("/") : null;
+
                 }),
                 );
              }),

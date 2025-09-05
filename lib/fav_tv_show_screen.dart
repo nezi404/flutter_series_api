@@ -64,7 +64,7 @@ class _FavTvShowScreenState extends State<FavTvShowScreen> {
             const SizedBox(height: 16,), 
             Expanded(child: 
               viewModel.hasFavourites 
-              ? TvShowGrid(tvShows: viewModel.tvShows)
+              ? TvShowGrid(tvShows: viewModel.tvShows, refresh: true)
               : Center(
                 child: Column(
                   children: [

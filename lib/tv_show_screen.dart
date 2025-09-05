@@ -93,18 +93,24 @@ class _TvShowScreenState extends State<TvShowScreen> {
                     ElevatedButton(onPressed: () => context.go("/"), child: Text("VOLTAR ↩️")
                     ),
                     SizedBox(width: 16),
-                    tvShowModel.tvShows.any((show) => show.id == tvShow.id) ?
-                    ElevatedButton(
-                      onPressed: () {tvShowModel.removeTvShow(tvShow, context);
-                      context.go("/");
-                      },
-                      child: Icon(Icons.heart_broken, color: Color(0xff8716d5), size: 18)
-                    )
-                    : ElevatedButton(
-                      onPressed: () {tvShowModel.addTvShow(tvShow, context);
-                      context.go("/");
-                      },
-                      child: Icon(Icons.favorite, color: Color(0xff8716d5), size: 18)
+                    FutureBuilder<bool>(
+                      future: tvShowModel.isFavourite(tvShow),
+                    builder: (context, snapshot) {
+                      final isFavourite = snapshot.data ?? false;
+                      return ElevatedButton(
+                        onPressed: () {
+                          if(isFavourite) {
+                            tvShowModel.removeFromFavourites(context, tvShow);
+                          } else {
+                            tvShowModel.addToFavourites(context, tvShow);
+                          }
+                          context.go("/");
+                        },
+                        child: Icon(isFavourite ? Icons.heart_broken : Icons.favorite,
+                          size:32,
+                          color: isFavourite ? Color.fromARGB(255, 122, 122, 122) : Color(0xff8716d5)),
+                        );
+                    },
                     )
                   ],)                
               ]

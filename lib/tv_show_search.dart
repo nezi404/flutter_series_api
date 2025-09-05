@@ -118,7 +118,7 @@ class _TvShowSearchScreenState extends State<TvShowSearchScreen> {
                     ),
                     SizedBox(height: 16),
                     Expanded(child: 
-                    TvShowGrid (tvShows: snapshot.data!), )
+                    TvShowGrid (tvShows: snapshot.data!, refresh: false), )
                   ],               
                 );   
               }
